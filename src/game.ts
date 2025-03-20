@@ -3,7 +3,6 @@ import * as CANNON from "cannon-es";
 import { createBoat } from "./models/boat";
 import { createCanalHouses } from "./models/canalHouses";
 import { createWater } from "./models/water";
-import { createBridge } from "./models/bridge";
 import { createObstacle } from "./models/obstacle";
 
 // Type definitions
@@ -31,7 +30,9 @@ export class Game {
     mesh: THREE.Group;
     body: CANNON.Body;
     lane: number;
-    isDucking: boolean;
+    targetX: number;
+    isChangingLanes: boolean;
+    tiltAngle: number;
   };
 
   private obstacles: Obstacle[] = [];
@@ -49,13 +50,7 @@ export class Game {
   public isRunning: boolean = false;
 
   private lastFrameTime: number = 0;
-  private obstacleTypes = [
-    "barrel",
-    "duck",
-    "bicycle",
-    "student",
-    "party_boat",
-  ];
+  private obstacleTypes = ["barrel", "duck", "bicycle", "student", "party_boat"];
 
   private scoreElement: HTMLElement | null;
   private finalScoreElement: HTMLElement | null;
@@ -119,7 +114,9 @@ export class Game {
       mesh: boatModel,
       body: boatBody,
       lane: 1, // Middle lane (0-indexed)
-      isDucking: false,
+      targetX: LANE_POSITIONS[1], // Initially set to the middle lane
+      isChangingLanes: false,
+      tiltAngle: 0,
     };
 
     this.scene.add(this.boat.mesh);
@@ -164,10 +161,7 @@ export class Game {
     this.scene.add(leftHouses);
     this.scene.add(rightHouses);
 
-    this.canalHouses.push(
-      { mesh: leftHouses, side: "left" },
-      { mesh: rightHouses, side: "right" }
-    );
+    this.canalHouses.push({ mesh: leftHouses, side: "left" }, { mesh: rightHouses, side: "right" });
   }
 
   private updateScore(): void {
@@ -185,54 +179,29 @@ export class Game {
     }
 
     // Random obstacle type
-    const obsType =
-      this.obstacleTypes[Math.floor(Math.random() * this.obstacleTypes.length)];
+    const obsType = this.obstacleTypes[Math.floor(Math.random() * this.obstacleTypes.length)];
 
     // Random lane
     const lane = Math.floor(Math.random() * TOTAL_LANES);
 
-    // Special case: sometimes spawn a bridge
-    const spawnBridge = Math.random() < 0.15; // 15% chance
+    // Create regular obstacle
+    const obstacle = createObstacle(obsType);
+    const obstacleBody = new CANNON.Body({
+      mass: 0, // Static body
+      position: new CANNON.Vec3(LANE_POSITIONS[lane], 0.5, 100), // Start far away
+      shape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)),
+    });
 
-    if (spawnBridge) {
-      // Create a bridge that spans all lanes
-      const bridge = createBridge();
-      const bridgeBody = new CANNON.Body({
-        mass: 0, // Static body
-        position: new CANNON.Vec3(0, 2, 100), // Lower from 3 to 2 to match visual model
-        shape: new CANNON.Box(new CANNON.Vec3(6, 1, 2)),
-      });
+    this.world.addBody(obstacleBody);
+    this.scene.add(obstacle);
 
-      this.world.addBody(bridgeBody);
-      this.scene.add(bridge);
-
-      this.obstacles.push({
-        mesh: bridge,
-        body: bridgeBody,
-        type: "bridge",
-        lane: -1, // -1 means spans all lanes
-        passed: false,
-      });
-    } else {
-      // Create regular obstacle
-      const obstacle = createObstacle(obsType);
-      const obstacleBody = new CANNON.Body({
-        mass: 0, // Static body
-        position: new CANNON.Vec3(LANE_POSITIONS[lane], 0.5, 100), // Start far away
-        shape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)),
-      });
-
-      this.world.addBody(obstacleBody);
-      this.scene.add(obstacle);
-
-      this.obstacles.push({
-        mesh: obstacle,
-        body: obstacleBody,
-        type: obsType,
-        lane,
-        passed: false,
-      });
-    }
+    this.obstacles.push({
+      mesh: obstacle,
+      body: obstacleBody,
+      type: obsType,
+      lane,
+      passed: false,
+    });
 
     this.lastObstacleTime = now;
 
@@ -252,7 +221,11 @@ export class Game {
       obstacle.body.position.z -= moveDistance;
 
       // Update mesh position to match physics body
-      obstacle.mesh.position.copy(obstacle.body.position as any);
+      obstacle.mesh.position.set(
+        obstacle.body.position.x,
+        obstacle.body.position.y,
+        obstacle.body.position.z
+      );
 
       // Check if obstacle is passed
       if (!obstacle.passed && obstacle.body.position.z < boatZ) {
@@ -286,16 +259,13 @@ export class Game {
       const xDist = Math.abs(boatX - obstacleX);
       const zDist = Math.abs(boatZ - obstacleZ);
 
-      if (obstacle.type === "bridge") {
-        // Bridge collision: Check if we're not ducking
-        if (!this.boat.isDucking && zDist < 2) {
-          return true;
-        }
-      } else {
-        // Regular obstacle collision
-        if (xDist < 1.1 && zDist < 2) {
-          return true;
-        }
+      // Adjust collision boundaries based on whether the boat is changing lanes
+      // Slightly more forgiving hitbox when changing lanes for better player experience
+      const xThreshold = this.boat.isChangingLanes ? 1.25 : 1.1;
+
+      // Regular obstacle collision
+      if (xDist < xThreshold && zDist < 2) {
+        return true;
       }
     }
 
@@ -339,17 +309,57 @@ export class Game {
   }
 
   private updateBoatPosition(): void {
-    // Update boat position based on lane
+    // Calculate target X position based on lane
     const targetX = LANE_POSITIONS[this.boat.lane];
-    this.boat.body.position.x = targetX;
+    this.boat.targetX = targetX;
 
-    // Apply ducking if needed
-    if (this.boat.isDucking) {
-      this.boat.mesh.scale.set(1, 0.5, 1);
-      this.boat.mesh.position.y = -0.25;
+    // Get current X position
+    const currentX = this.boat.body.position.x;
+
+    // Interpolation speed (higher value = faster transition)
+    const lerpSpeed = 6;
+
+    // If the boat is not yet at the target position
+    if (Math.abs(currentX - targetX) > 0.01) {
+      this.boat.isChangingLanes = true;
+
+      // Smooth interpolation (lerp) toward target
+      const newX = currentX + (targetX - currentX) * Math.min(1, lerpSpeed * (1 / 60));
+      this.boat.body.position.x = newX;
+
+      // Calculate tilt angle based on direction of movement
+      const tiltDirection = targetX > currentX ? 1 : -1;
+      this.boat.tiltAngle =
+        tiltDirection * Math.min(Math.PI / 12, Math.abs(targetX - currentX) * 0.5);
     } else {
-      this.boat.mesh.scale.set(1, 1, 1);
-      this.boat.mesh.position.y = 0;
+      // When boat reaches the target position
+      this.boat.body.position.x = targetX; // Snap to exact position
+      this.boat.isChangingLanes = false;
+
+      // Gradually return tilt to zero
+      if (Math.abs(this.boat.tiltAngle) > 0.01) {
+        this.boat.tiltAngle *= 0.8;
+      } else {
+        this.boat.tiltAngle = 0;
+      }
+    }
+
+    // Add gentle rocking motion while moving
+    if (this.isRunning) {
+      const time = performance.now() * 0.001; // Current time in seconds
+      // Small rolling (side to side) motion
+      const gentleRoll = Math.sin(time * 2) * 0.03;
+      // Small pitching (front to back) motion
+      const gentlePitch = Math.sin(time * 1.5) * 0.02;
+
+      // Apply rocking motion (but less when actively changing lanes)
+      const rockFactor = this.boat.isChangingLanes ? 0.3 : 1.0;
+      this.boat.mesh.rotation.z = -this.boat.tiltAngle + gentleRoll * rockFactor;
+      this.boat.mesh.rotation.x = gentlePitch * rockFactor;
+    } else {
+      // Just apply the tilt when not running
+      this.boat.mesh.rotation.z = -this.boat.tiltAngle;
+      this.boat.mesh.rotation.x = 0;
     }
 
     // Update mesh position to match physics body
@@ -371,10 +381,7 @@ export class Game {
     // Update game state
     if (this.isRunning) {
       // Accelerate
-      this.speed = Math.min(
-        this.maxSpeed,
-        this.speed + this.acceleration * delta
-      );
+      this.speed = Math.min(this.maxSpeed, this.speed + this.acceleration * delta);
 
       // Update score
       this.score += delta * this.speed;
@@ -388,6 +395,9 @@ export class Game {
 
       // Update environment
       this.updateEnvironment(delta);
+
+      // Update boat animation
+      this.updateBoatPosition();
     }
 
     // Update physics world
@@ -418,7 +428,6 @@ export class Game {
 
     // Reset boat position
     this.boat.lane = 1;
-    this.boat.isDucking = false;
     this.updateBoatPosition();
   }
 
@@ -455,18 +464,6 @@ export class Game {
       this.boat.lane++;
       this.updateBoatPosition();
     }
-  }
-
-  public duck(): void {
-    if (!this.isRunning) return;
-    this.boat.isDucking = true;
-    this.updateBoatPosition();
-  }
-
-  public standUp(): void {
-    if (!this.isRunning) return;
-    this.boat.isDucking = false;
-    this.updateBoatPosition();
   }
 
   public handleResize(): void {

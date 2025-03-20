@@ -230,11 +230,8 @@ function createStudent(): THREE.Group {
   const student = new THREE.Group();
 
   // Random shirt color
-  const shirtColors = [
-    0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff,
-  ];
-  const shirtColor =
-    shirtColors[Math.floor(Math.random() * shirtColors.length)];
+  const shirtColors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff];
+  const shirtColor = shirtColors[Math.floor(Math.random() * shirtColors.length)];
 
   // Body
   const bodyGeometry = new THREE.CylinderGeometry(0.25, 0.25, 0.8, 8);
@@ -363,13 +360,10 @@ function createPartyBoat(): THREE.Group {
 
   // Add several people (simplified)
   const numPeople = 4 + Math.floor(Math.random() * 4); // 4-7 people
-  const peopleColors = [
-    0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff,
-  ];
+  const peopleColors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff];
 
   for (let i = 0; i < numPeople; i++) {
-    const personColor =
-      peopleColors[Math.floor(Math.random() * peopleColors.length)];
+    const personColor = peopleColors[Math.floor(Math.random() * peopleColors.length)];
 
     // Body (simplified as a box)
     const bodyGeometry = new THREE.BoxGeometry(0.3, 0.5, 0.3);

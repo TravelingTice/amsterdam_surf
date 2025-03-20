@@ -28,9 +28,7 @@ export function createCanalHouses(side: "left" | "right"): THREE.Group {
 
     const isCornerHouse = Math.random() < 0.2;
     const houseWidth = 2 + Math.random() * 1; // Vary width between 2-3 units
-    const houseDepth = isCornerHouse
-      ? 3 + Math.random() * 1
-      : 2 + Math.random() * 0.5;
+    const houseDepth = isCornerHouse ? 3 + Math.random() * 1 : 2 + Math.random() * 0.5;
     const houseHeight = 5 + Math.random() * 2;
 
     // Base house structure
@@ -74,11 +72,7 @@ export function createCanalHouses(side: "left" | "right"): THREE.Group {
     const windowGroup = new THREE.Group();
     const windowSize = 0.4;
     const windowDepth = 0.05;
-    const windowGeometry = new THREE.BoxGeometry(
-      windowSize,
-      windowSize,
-      windowDepth
-    );
+    const windowGeometry = new THREE.BoxGeometry(windowSize, windowSize, windowDepth);
     const windowMaterial = new THREE.MeshStandardMaterial({
       color: windowColor,
       roughness: 0.1,
@@ -95,13 +89,9 @@ export function createCanalHouses(side: "left" | "right"): THREE.Group {
     for (let row = 0; row < numRowsWindows; row++) {
       for (let col = 0; col < numColsWindows; col++) {
         // Front windows (facing water)
-        const windowFront = new THREE.Mesh(
-          windowGeometry,
-          windowMaterial.clone()
-        );
+        const windowFront = new THREE.Mesh(windowGeometry, windowMaterial.clone());
         windowFront.position.z = (col - (numColsWindows - 1) / 2) * 0.6;
-        windowFront.position.y =
-          (row - (numRowsWindows - 1) / 2) * 1.2 + houseHeight / 2;
+        windowFront.position.y = (row - (numRowsWindows - 1) / 2) * 1.2 + houseHeight / 2;
         windowFront.position.x = houseDepth / 2 + windowDepth / 2;
         windowFront.rotation.y = Math.PI / 2;
 
@@ -117,11 +107,7 @@ export function createCanalHouses(side: "left" | "right"): THREE.Group {
     // Create a door
     const doorWidth = 0.8;
     const doorHeight = 1.8;
-    const doorGeometry = new THREE.BoxGeometry(
-      doorWidth,
-      doorHeight,
-      windowDepth
-    );
+    const doorGeometry = new THREE.BoxGeometry(doorWidth, doorHeight, windowDepth);
     const doorMaterial = new THREE.MeshStandardMaterial({
       color: 0x4d2608,
       roughness: 0.8,

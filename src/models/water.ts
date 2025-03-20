@@ -7,15 +7,6 @@ export function createWater(): THREE.Mesh {
   // Rotate it to be horizontal
   waterGeometry.rotateX(-Math.PI / 2);
 
-  // Create water material with animated normal map for waves
-  const waterMaterial = new THREE.MeshStandardMaterial({
-    color: 0x2e5984, // Amsterdam canal blue
-    roughness: 0.1,
-    metalness: 0.8,
-    transparent: true,
-    opacity: 0.8,
-  });
-
   // Add simple vertex displacement to simulate waves
   const count = waterGeometry.attributes.position.count;
   const displacement = new Float32Array(count);
@@ -28,10 +19,7 @@ export function createWater(): THREE.Mesh {
     displacement[i] = Math.sin(x * 0.5) * 0.05 + Math.sin(z * 0.5) * 0.05;
   }
 
-  waterGeometry.setAttribute(
-    "displacement",
-    new THREE.BufferAttribute(displacement, 1)
-  );
+  waterGeometry.setAttribute("displacement", new THREE.BufferAttribute(displacement, 1));
 
   // Create the shader material for animated waves
   const customWaterMaterial = new THREE.ShaderMaterial({
@@ -89,7 +77,7 @@ export function createWater(): THREE.Mesh {
   });
 
   // Create a simple update function for the animation
-  const updateWater = () => {
+  const updateWater = (): void => {
     const time = performance.now() * 0.001; // Convert to seconds
     customWaterMaterial.uniforms.time.value = time;
     requestAnimationFrame(updateWater);

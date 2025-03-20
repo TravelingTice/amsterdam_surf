@@ -1,5 +1,11 @@
 # Amsterdam Canal Surfer
 
+A ✨Vibe coded✨ game for #vibejam. 95% AI generated code. Using Three.js, Cannon.js, and TypeScript.
+
+![Game Screenshot](https://github.com/TravelingTice/amsterdam_surf/blob/main/screenshot.png?raw=true)
+
+## Description
+
 An endless runner game set in the beautiful canals of Amsterdam, where you navigate a traditional open-top boat ("sloep") through obstacles in the iconic canals.
 
 ## Game Overview
@@ -11,7 +17,6 @@ In Amsterdam Canal Surfer, you'll be navigating a traditional Dutch boat through
 - **Start Game**: Press the spacebar or tap the START button
 - **Controls**:
   - **Arrow Left/Right**: Navigate between the three lanes
-  - **Arrow Down**: Duck to go under bridges
   - **Arrow Up**: Stand back up after ducking
 - **Mobile Controls**: Touch buttons will appear at the bottom of the screen on mobile devices
 - **Game Over**: The game ends when you hit an obstacle or a bridge

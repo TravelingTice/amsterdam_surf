@@ -1,0 +1,21 @@
+{
+  "name": "amsterdam_surf",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Amsterdam Canal Surfer - An endless runner game",
+  "dependencies": {
+    "@types/three": "^0.174.0",
+    "cannon-es": "^0.20.0",
+    "three": "^0.174.0",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.2"
+  }
+}

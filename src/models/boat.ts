@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { createBoatFlag } from "./boatflag";
 
 export function createBoat(): THREE.Group {
   const boat = new THREE.Group();
@@ -146,6 +147,12 @@ export function createBoat(): THREE.Group {
   steeringWheelGroup.rotation.x = Math.PI / 2 + Math.PI / 6; // Angled slightly
   steeringWheelGroup.position.set(0, 0.55, -0.7); // Position at front of boat
 
+  const flag = createBoatFlag();
+  flag.position.set(0, 0.2, 1.6);
+  flag.rotation.y = Math.PI / 3; // Rotate 90 degrees so flag points backwards
+  flag.rotation.x = Math.PI / 12; // Slant it down slightly (15 degrees)
+  flag.castShadow = true;
+  flag.receiveShadow = true;
   // Add all parts to the boat
   boat.add(hull);
   boat.add(rod);
@@ -157,6 +164,7 @@ export function createBoat(): THREE.Group {
   boat.add(middleSeat);
   boat.add(motorGroup);
   boat.add(steeringWheelGroup);
+  boat.add(flag);
 
   // Position and rotate the boat correctly
   boat.rotation.y = Math.PI; // Face the right direction

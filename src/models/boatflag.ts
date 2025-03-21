@@ -4,7 +4,7 @@ export function createBoatFlag(): THREE.Group {
   const flagGroup = new THREE.Group();
 
   // Create the black rod
-  const rodGeometry = new THREE.CylinderGeometry(0.02, 0.02, 0.3, 8);
+  const rodGeometry = new THREE.CylinderGeometry(0.02, 0.02, 0.8, 8);
   const rodMaterial = new THREE.MeshStandardMaterial({
     color: 0x000000, // Black
     roughness: 0.5,
@@ -17,52 +17,61 @@ export function createBoatFlag(): THREE.Group {
   // Position the rod vertically
   rod.position.y = 0.4; // Half the height of the rod
 
-  // Create the flag (three colored boxes)
+  // Create the flag with a waving effect
+  const waveSegments = 8; // Number of segments to create wave effect
   const flagWidth = 0.4;
   const flagHeight = 0.08;
   const flagDepth = 0.01;
+  const segmentWidth = flagWidth / waveSegments;
 
-  // Red stripe (top)
-  const redGeometry = new THREE.BoxGeometry(flagWidth, flagHeight, flagDepth);
-  const redMaterial = new THREE.MeshStandardMaterial({
-    color: 0xae1c28, // Dutch flag red
-    roughness: 0.7,
-    metalness: 0.1,
-  });
-  const redStripe = new THREE.Mesh(redGeometry, redMaterial);
-  redStripe.position.set(flagWidth / 2, 0.74, 0); // Position at the top of the rod
-  redStripe.castShadow = true;
-  redStripe.receiveShadow = true;
+  // Create the three color stripes with wave effect
+  const colors = [0xae1c28, 0xffffff, 0x21468b]; // Red, White, Blue
+  const stripeNames = ["Red", "White", "Blue"];
+  const stripes = [];
 
-  // White stripe (middle)
-  const whiteGeometry = new THREE.BoxGeometry(flagWidth, flagHeight, flagDepth);
-  const whiteMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffffff, // White
-    roughness: 0.7,
-    metalness: 0.1,
-  });
-  const whiteStripe = new THREE.Mesh(whiteGeometry, whiteMaterial);
-  whiteStripe.position.set(flagWidth / 2, 0.66, 0); // Position below the red stripe
-  whiteStripe.castShadow = true;
-  whiteStripe.receiveShadow = true;
+  // Create each colored stripe
+  for (let colorIndex = 0; colorIndex < 3; colorIndex++) {
+    const stripeGroup = new THREE.Group();
+    const yPos = 0.74 - colorIndex * flagHeight;
 
-  // Blue stripe (bottom)
-  const blueGeometry = new THREE.BoxGeometry(flagWidth, flagHeight, flagDepth);
-  const blueMaterial = new THREE.MeshStandardMaterial({
-    color: 0x21468b, // Dutch flag blue
-    roughness: 0.7,
-    metalness: 0.1,
-  });
-  const blueStripe = new THREE.Mesh(blueGeometry, blueMaterial);
-  blueStripe.position.set(flagWidth / 2, 0.58, 0); // Position below the white stripe
-  blueStripe.castShadow = true;
-  blueStripe.receiveShadow = true;
+    // Create segments for each stripe to simulate wave
+    for (let i = 0; i < waveSegments; i++) {
+      const segmentGeometry = new THREE.BoxGeometry(segmentWidth, flagHeight, flagDepth);
+      const segmentMaterial = new THREE.MeshStandardMaterial({
+        color: colors[colorIndex],
+        roughness: 0.7,
+        metalness: 0.1,
+      });
 
-  // Add all components to the flag group
+      const segment = new THREE.Mesh(segmentGeometry, segmentMaterial);
+
+      // Position each segment with progressive wave effect
+      const xOffset = i * segmentWidth + segmentWidth / 2;
+      // Calculate wave amplitude - increases toward the end of the flag
+      const waveAmplitude = 0.01 * i;
+      // Apply sine wave pattern
+      const zOffset = Math.sin(i * 0.8) * waveAmplitude;
+
+      segment.position.set(xOffset, 0, zOffset);
+
+      // Create a subtle rotation for each segment to enhance wave effect
+      segment.rotation.z = Math.sin(i * 0.7) * 0.1;
+      segment.rotation.x = Math.sin(i * 0.5) * 0.05;
+
+      segment.castShadow = true;
+      segment.receiveShadow = true;
+
+      stripeGroup.add(segment);
+    }
+
+    stripeGroup.position.y = yPos;
+    stripeGroup.position.x = 0;
+    flagGroup.add(stripeGroup);
+    stripes.push(stripeGroup);
+  }
+
+  // Add the rod to the flag group
   flagGroup.add(rod);
-  flagGroup.add(redStripe);
-  flagGroup.add(whiteStripe);
-  flagGroup.add(blueStripe);
 
   return flagGroup;
 }

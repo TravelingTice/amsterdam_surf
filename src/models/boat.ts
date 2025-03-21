@@ -149,8 +149,8 @@ export function createBoat(): THREE.Group {
 
   const flag = createBoatFlag();
   flag.position.set(0, 0.2, 1.6);
-  flag.rotation.y = Math.PI / 3; // Rotate 90 degrees so flag points backwards
-  flag.rotation.x = Math.PI / 12; // Slant it down slightly (15 degrees)
+  flag.rotation.y = -Math.PI / 1.5; // Rotate 90 degrees so flag points backwards
+  flag.rotation.x = Math.PI / 7; // Slant it down slightly (15 degrees)
   flag.castShadow = true;
   flag.receiveShadow = true;
   // Add all parts to the boat

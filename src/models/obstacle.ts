@@ -4,8 +4,6 @@ export function createObstacle(type: string): THREE.Group | THREE.Mesh {
   switch (type) {
     case "barrel":
       return createBarrel();
-    case "duck":
-      return createDuck();
     case "bicycle":
       return createBicycle();
     case "student":
@@ -50,71 +48,6 @@ function createBarrel(): THREE.Mesh {
   barrel.position.y = 0.5;
 
   return barrel;
-}
-
-function createDuck(): THREE.Group {
-  const duck = new THREE.Group();
-
-  // Duck body
-  const bodyGeometry = new THREE.SphereGeometry(0.4, 16, 12);
-  bodyGeometry.scale(1, 0.8, 1.3);
-
-  const bodyMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffff00, // Yellow
-    roughness: 0.9,
-    metalness: 0,
-  });
-
-  const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-  body.position.y = 0.4;
-  body.castShadow = true;
-
-  // Duck head
-  const headGeometry = new THREE.SphereGeometry(0.25, 16, 12);
-  const headMaterial = bodyMaterial;
-
-  const head = new THREE.Mesh(headGeometry, headMaterial);
-  head.position.set(0, 0.7, 0.35);
-  head.castShadow = true;
-
-  // Duck bill
-  const billGeometry = new THREE.ConeGeometry(0.1, 0.3, 4);
-  billGeometry.rotateX(-Math.PI / 2);
-
-  const billMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffa500, // Orange
-    roughness: 0.9,
-    metalness: 0,
-  });
-
-  const bill = new THREE.Mesh(billGeometry, billMaterial);
-  bill.position.set(0, 0.65, 0.6);
-  bill.castShadow = true;
-
-  // Duck eyes
-  const eyeGeometry = new THREE.SphereGeometry(0.05, 8, 8);
-  const eyeMaterial = new THREE.MeshStandardMaterial({
-    color: 0x000000, // Black
-    roughness: 0.5,
-    metalness: 0.2,
-  });
-
-  const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-  leftEye.position.set(0.1, 0.75, 0.5);
-
-  const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-  rightEye.position.set(-0.1, 0.75, 0.5);
-
-  duck.add(body);
-  duck.add(head);
-  duck.add(bill);
-  duck.add(leftEye);
-  duck.add(rightEye);
-
-  // Float on water
-  duck.position.y = 0.15;
-
-  return duck;
 }
 
 function createBicycle(): THREE.Group {

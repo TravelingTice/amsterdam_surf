@@ -10,16 +10,15 @@ An endless runner game set in the beautiful canals of Amsterdam, where you navig
 
 ## Game Overview
 
-In Amsterdam Canal Surfer, you'll be navigating a traditional Dutch boat through the canals of Amsterdam. Avoid obstacles like bicycles, ducks, drunk students, and other party boats. Be ready to duck when bridges appear across the canal!
+In Amsterdam Canal Surfer, you'll be navigating a traditional Dutch boat through the canals of Amsterdam. Avoid obstacles like bicycles, drunk students, and other party boats.
 
 ## How to Play
 
 - **Start Game**: Press the spacebar or tap the START button
 - **Controls**:
   - **Arrow Left/Right**: Navigate between the three lanes
-  - **Arrow Up**: Stand back up after ducking
 - **Mobile Controls**: Touch buttons will appear at the bottom of the screen on mobile devices
-- **Game Over**: The game ends when you hit an obstacle or a bridge
+- **Game Over**: The game ends when you hit an obstacle
 - **Score**: Your score is based on the distance traveled in meters
 
 ## Technical Details

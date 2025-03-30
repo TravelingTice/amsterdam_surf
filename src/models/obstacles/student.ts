@@ -3,14 +3,10 @@ import * as THREE from "three";
 export function createStudent(): THREE.Group {
   const student = new THREE.Group();
 
-  // Random shirt color
-  const shirtColors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff];
-  const shirtColor = shirtColors[Math.floor(Math.random() * shirtColors.length)];
-
   // Body
   const bodyGeometry = new THREE.CylinderGeometry(0.25, 0.25, 0.8, 8);
   const bodyMaterial = new THREE.MeshStandardMaterial({
-    color: shirtColor,
+    color: 0xffa500, // Orange
     roughness: 0.9,
     metalness: 0.1,
   });

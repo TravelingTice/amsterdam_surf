@@ -29,15 +29,13 @@ export function createPartyBoat(): THREE.Group {
 
   // Add several people (simplified)
   const numPeople = 4 + Math.floor(Math.random() * 4) // 4-7 people
-  const peopleColors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff]
+  const personColor = 0xffa500 // Orange color for all people
 
   for (let i = 0; i < numPeople; i++) {
-    const personColor = peopleColors[Math.floor(Math.random() * peopleColors.length)]
-
     // Body (simplified as a box)
     const bodyGeometry = new THREE.BoxGeometry(0.3, 0.5, 0.3)
     const bodyMaterial = new THREE.MeshStandardMaterial({
-      color: personColor,
+      color: personColor, // Use fixed orange color
       roughness: 0.9,
       metalness: 0.1,
     })

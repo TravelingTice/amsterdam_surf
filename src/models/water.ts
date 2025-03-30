@@ -1,25 +1,25 @@
-import * as THREE from "three";
+import * as THREE from "three"
 
 export function createWater(): THREE.Mesh {
   // Create a large plane for the water
-  const waterGeometry = new THREE.PlaneGeometry(20, 300, 32, 128);
+  const waterGeometry = new THREE.PlaneGeometry(20, 300, 32, 128)
 
   // Rotate it to be horizontal
-  waterGeometry.rotateX(-Math.PI / 2);
+  waterGeometry.rotateX(-Math.PI / 2)
 
   // Add simple vertex displacement to simulate waves
-  const count = waterGeometry.attributes.position.count;
-  const displacement = new Float32Array(count);
+  const count = waterGeometry.attributes.position.count
+  const displacement = new Float32Array(count)
 
   for (let i = 0; i < count; i++) {
-    const x = waterGeometry.attributes.position.getX(i);
-    const z = waterGeometry.attributes.position.getZ(i);
+    const x = waterGeometry.attributes.position.getX(i)
+    const z = waterGeometry.attributes.position.getZ(i)
 
     // Add small random displacement for wave effect
-    displacement[i] = Math.sin(x * 0.5) * 0.05 + Math.sin(z * 0.5) * 0.05;
+    displacement[i] = Math.sin(x * 0.5) * 0.05 + Math.sin(z * 0.5) * 0.05
   }
 
-  waterGeometry.setAttribute("displacement", new THREE.BufferAttribute(displacement, 1));
+  waterGeometry.setAttribute("displacement", new THREE.BufferAttribute(displacement, 1))
 
   // Create the shader material for animated waves
   const customWaterMaterial = new THREE.ShaderMaterial({
@@ -74,22 +74,22 @@ export function createWater(): THREE.Mesh {
     `,
     transparent: true,
     fog: true,
-  });
+  })
 
   // Create a simple update function for the animation
   const updateWater = (): void => {
-    const time = performance.now() * 0.001; // Convert to seconds
-    customWaterMaterial.uniforms.time.value = time;
-    requestAnimationFrame(updateWater);
-  };
+    const time = performance.now() * 0.001 // Convert to seconds
+    customWaterMaterial.uniforms.time.value = time
+    requestAnimationFrame(updateWater)
+  }
 
   // Start the animation
-  updateWater();
+  updateWater()
 
   // Create the water mesh
-  const water = new THREE.Mesh(waterGeometry, customWaterMaterial);
-  water.receiveShadow = true;
-  water.position.y = 0; // At ground level
+  const water = new THREE.Mesh(waterGeometry, customWaterMaterial)
+  water.receiveShadow = true
+  water.position.y = 0 // At ground level
 
-  return water;
+  return water
 }

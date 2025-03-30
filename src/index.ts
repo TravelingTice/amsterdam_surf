@@ -44,13 +44,11 @@ window.addEventListener("DOMContentLoaded", () => {
   const rightBtn = document.getElementById("right-btn");
 
   if (leftBtn) {
-    leftBtn.addEventListener("touchstart", () => game.moveLeft());
-    leftBtn.addEventListener("mousedown", () => game.moveLeft());
+    leftBtn.addEventListener("click", () => game.moveLeft());
   }
 
   if (rightBtn) {
-    rightBtn.addEventListener("touchstart", () => game.moveRight());
-    rightBtn.addEventListener("mousedown", () => game.moveRight());
+    rightBtn.addEventListener("click", () => game.moveRight());
   }
 
   // Handle window resize

@@ -44,7 +44,7 @@ export class Game {
   private canalHouses: { mesh: THREE.Group; side: "left" | "right" }[] = [];
   private water: THREE.Mesh;
   private lastObstacleTime: number = 0;
-  private obstacleInterval: number = 1000; // ms
+  private obstacleInterval: number = 2000; // Increased from 1000 to 2000ms
 
   private isMoving: boolean = false;
   public isRunning: boolean = false;
@@ -178,6 +178,15 @@ export class Game {
       return;
     }
 
+    // Check if there's an obstacle too close to the spawn point
+    const tooCloseObstacle = this.obstacles.some(
+      (obstacle) => obstacle.body.position.z > 70 // Reduced from 100 to ensure bigger gap
+    );
+
+    if (tooCloseObstacle) {
+      return;
+    }
+
     // Random obstacle type
     const obsType = this.obstacleTypes[Math.floor(Math.random() * this.obstacleTypes.length)];
 
@@ -205,8 +214,8 @@ export class Game {
 
     this.lastObstacleTime = now;
 
-    // Make obstacles spawn more frequently as game progresses
-    this.obstacleInterval = Math.max(500, 1000 - this.score / 50);
+    // Make obstacles spawn less frequently, with a higher minimum time
+    this.obstacleInterval = Math.max(1000, 2000 - this.score / 50);
   }
 
   private updateObstacles(delta: number): void {

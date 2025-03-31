@@ -436,7 +436,9 @@ export class Game {
   }
 
   public restart(): void {
-    this.start()
+    const url = new URL(window.location.href)
+    url.searchParams.set("startImmediately", "true")
+    window.location.href = url.toString()
   }
 
   public gameOver(): void {

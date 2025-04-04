@@ -1,4 +1,5 @@
 import * as THREE from "three"
+import { createBottle } from "./party_boat/bottle"
 
 export function createStudent(): THREE.Group {
   const student = new THREE.Group()
@@ -11,7 +12,7 @@ export function createStudent(): THREE.Group {
     metalness: 0.1,
   })
   const body = new THREE.Mesh(bodyGeometry, bodyMaterial)
-  body.position.y = 1.0
+  body.position.y = -0.1
   body.castShadow = true
 
   // Head
@@ -22,7 +23,7 @@ export function createStudent(): THREE.Group {
     metalness: 0.1,
   })
   const head = new THREE.Mesh(headGeometry, headMaterial)
-  head.position.y = 1.6
+  head.position.y = 0.5
   head.castShadow = true
 
   // Arms
@@ -31,13 +32,13 @@ export function createStudent(): THREE.Group {
 
   // Left arm
   const leftArm = new THREE.Mesh(armGeometry, armMaterial)
-  leftArm.position.set(0.3, 1.1, 0)
+  leftArm.position.set(0.3, 0.0, 0)
   leftArm.rotation.z = Math.PI / 6
   leftArm.castShadow = true
 
   // Right arm
   const rightArm = new THREE.Mesh(armGeometry, armMaterial)
-  rightArm.position.set(-0.3, 1.1, 0)
+  rightArm.position.set(-0.3, 0.0, 0)
   rightArm.rotation.z = -Math.PI / 6
   rightArm.castShadow = true
 
@@ -51,40 +52,23 @@ export function createStudent(): THREE.Group {
 
   // Left leg
   const leftLeg = new THREE.Mesh(legGeometry, legMaterial)
-  leftLeg.position.set(0.15, 0.4, 0)
+  leftLeg.position.set(0.15, -0.7, 0)
   leftLeg.castShadow = true
 
   // Right leg
   const rightLeg = new THREE.Mesh(legGeometry, legMaterial)
-  rightLeg.position.set(-0.15, 0.4, 0)
+  rightLeg.position.set(-0.15, -0.7, 0)
   rightLeg.castShadow = true
 
   // Optional: add a beer bottle (it's Amsterdam after all)
   if (Math.random() < 0.7) {
-    const bottleGroup = new THREE.Group()
+    const bottle = createBottle()
 
-    const bottleGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.2, 8)
-    const bottleMaterial = new THREE.MeshStandardMaterial({
-      color: 0x8b4513, // Brown bottle
-      roughness: 0.2,
-      metalness: 0.8,
-      transparent: true,
-      opacity: 0.8,
-    })
-    const bottle = new THREE.Mesh(bottleGeometry, bottleMaterial)
+    bottle.position.set(0.5, -0.2, 0)
     bottle.castShadow = true
+    bottle.receiveShadow = true
 
-    const neckGeometry = new THREE.CylinderGeometry(0.02, 0.05, 0.1, 8)
-    const neck = new THREE.Mesh(neckGeometry, bottleMaterial)
-    neck.position.y = 0.15
-    neck.castShadow = true
-
-    bottleGroup.add(bottle)
-    bottleGroup.add(neck)
-    bottleGroup.position.set(0.5, 1.0, 0)
-    bottleGroup.rotation.z = Math.PI / 2
-
-    student.add(bottleGroup)
+    student.add(bottle)
   }
 
   student.add(body)
@@ -95,8 +79,9 @@ export function createStudent(): THREE.Group {
   student.add(rightLeg)
 
   // Partially submerged
-  student.position.y = 0.1
-  student.scale.set(0.7, 0.7, 0.7) // Make slightly smaller to fit in canal
+  student.position.y = -0.4
+  student.scale.set(0.9, 0.9, 0.9) // Make slightly smaller to fit in canal
+  student.rotation.z = Math.random() / 2 - 0.25
 
   return student
 }

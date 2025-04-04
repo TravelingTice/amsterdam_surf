@@ -7,7 +7,7 @@ export function createBottle(): THREE.Group {
   const bottleBody = new THREE.Mesh(
     new THREE.CylinderGeometry(0.04, 0.04, 0.2, 16),
     new THREE.MeshStandardMaterial({
-      color: 0x008000, // Green bottle
+      color: 0x90ee90, // Lightgreen bottle
       roughness: 0.2,
       metalness: 0.8,
       transparent: true,
@@ -20,7 +20,7 @@ export function createBottle(): THREE.Group {
   const bottleNeck = new THREE.Mesh(
     new THREE.CylinderGeometry(0.02, 0.02, 0.1, 16),
     new THREE.MeshStandardMaterial({
-      color: 0x008000, // Green bottle
+      color: 0x90ee90, // Lightgreen bottle
       roughness: 0.2,
       metalness: 0.8,
       transparent: true,

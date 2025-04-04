@@ -60,16 +60,14 @@ export function createStudent(): THREE.Group {
   rightLeg.position.set(-0.15, -0.7, 0)
   rightLeg.castShadow = true
 
-  // Optional: add a beer bottle (it's Amsterdam after all)
-  if (Math.random() < 0.7) {
-    const bottle = createBottle()
+  // Add a beer bottle (it's Amsterdam after all)
+  const bottle = createBottle()
 
-    bottle.position.set(0.5, -0.2, 0)
-    bottle.castShadow = true
-    bottle.receiveShadow = true
+  bottle.position.set(0.5, -0.2, 0)
+  bottle.castShadow = true
+  bottle.receiveShadow = true
 
-    student.add(bottle)
-  }
+  student.add(bottle)
 
   student.add(body)
   student.add(head)

@@ -1,4 +1,5 @@
 import * as THREE from "three"
+import { createFlag } from "./flag"
 
 export function createCanalHouses(side: "left" | "right"): THREE.Group {
   const houses = new THREE.Group()
@@ -116,16 +117,27 @@ export function createCanalHouses(side: "left" | "right"): THREE.Group {
 
     const door = new THREE.Mesh(doorGeometry, doorMaterial)
     door.position.y = doorHeight / 2
-    door.position.x = houseDepth / 2 + windowDepth / 2
+    door.position.x = houseDepth / 2 + windowDepth / 2 + 0.05
     door.position.z = (Math.random() - 0.5) * (houseWidth - doorWidth - 0.2)
     door.rotation.y = Math.PI / 2
+
+    if (Math.random() < 0.3) {
+      const flag = createFlag({ withOrangeRibbon: true })
+      flag.position.y = door.position.y + 0.5
+      flag.position.x = door.position.x
+      flag.position.z = door.position.z + doorWidth / 2 + 0.2
+      flag.rotation.z = -Math.PI / 5
+
+      // Increase scale of flag
+      flag.scale.set(1.9, 1.9, 1.9)
+      houseGroup.add(flag)
+    }
 
     // Add all elements to house group
     houseGroup.add(house)
     houseGroup.add(windowGroup)
     houseGroup.add(door)
     houseGroup.add(roof)
-
     // Optional architectural details like hook beams
     if (Math.random() < 0.7) {
       const beam = createHookBeam()

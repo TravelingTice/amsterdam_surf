@@ -1,6 +1,10 @@
 import * as THREE from "three"
 
-export function createFlag(): THREE.Group {
+export interface FlagOptions {
+  withOrangeRibbon?: boolean
+}
+
+export function createFlag(options: FlagOptions = {}): THREE.Group {
   const flagGroup = new THREE.Group()
 
   // Create the black rod
@@ -67,6 +71,46 @@ export function createFlag(): THREE.Group {
     stripeGroup.position.x = 0
     flagGroup.add(stripeGroup)
     stripes.push(stripeGroup)
+  }
+
+  // Add orange ribbon if requested
+  if (options.withOrangeRibbon) {
+    const ribbonGroup = new THREE.Group()
+    const ribbonWidth = 0.3
+    const ribbonHeight = 0.05
+    const ribbonDepth = 0.01
+
+    // Create ribbon segments with a slight wave
+    for (let i = 0; i < waveSegments; i++) {
+      const segmentGeometry = new THREE.BoxGeometry(segmentWidth * 0.75, ribbonHeight, ribbonDepth)
+      const segmentMaterial = new THREE.MeshStandardMaterial({
+        color: 0xff6600, // Orange color
+        roughness: 0.7,
+        metalness: 0.1,
+      })
+
+      const segment = new THREE.Mesh(segmentGeometry, segmentMaterial)
+
+      // Position with slight droop effect
+      const xOffset = i * (segmentWidth * 0.75) + (segmentWidth * 0.75) / 2
+      // Drooping curve
+      const yOffset = -Math.sin((i / (waveSegments - 1)) * Math.PI) * 0.02
+
+      segment.position.set(xOffset, yOffset, 0)
+
+      // Add slight rotation for droop effect
+      segment.rotation.z = -Math.sin((i / (waveSegments - 1)) * Math.PI) * 0.1
+
+      segment.castShadow = true
+      segment.receiveShadow = true
+
+      ribbonGroup.add(segment)
+    }
+
+    // Position ribbon below the flag
+    ribbonGroup.position.y = 0.5
+    ribbonGroup.position.x = 0.05
+    flagGroup.add(ribbonGroup)
   }
 
   // Add the rod to the flag group

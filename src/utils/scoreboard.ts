@@ -33,7 +33,7 @@ export const ScoreboardService = {
   },
 
   // Get top scores from Supabase
-  async getTopScores(limit: number = 10): Promise<Score[]> {
+  async getTopScores(limit: number = 15): Promise<Score[]> {
     try {
       const { data, error } = await supabase
         .from("scores")

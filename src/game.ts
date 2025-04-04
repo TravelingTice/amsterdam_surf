@@ -489,7 +489,7 @@ export class Game {
     scoreboardBody.innerHTML = ""
 
     try {
-      const scores = await ScoreboardService.getTopScores()
+      const scores = await ScoreboardService.getTopScores(15)
       scoreboardLoading.classList.add("hidden")
 
       if (scores.length === 0) {
@@ -499,7 +499,8 @@ export class Game {
         return
       }
 
-      scores.forEach((score, index) => {
+      // Only display up to 15 scores
+      scores.slice(0, 15).forEach((score, index) => {
         const row = document.createElement("tr")
         row.innerHTML = `
           <td>${index + 1}</td>

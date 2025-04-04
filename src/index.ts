@@ -17,6 +17,17 @@ window.addEventListener("DOMContentLoaded", () => {
     startGame(game)
   }
 
+  // Add page visibility event handling
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      // Page not visible, pause the game
+      game.pause()
+    } else {
+      // Page visible again, resume the game
+      game.resume()
+    }
+  })
+
   // Start button click handler
   const startButton = document.getElementById("start-button") as HTMLButtonElement
   startButton.addEventListener("click", () => {

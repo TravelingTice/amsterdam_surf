@@ -49,6 +49,8 @@ export class Game {
 
   private isMoving: boolean = false
   public isRunning: boolean = false
+  private isPaused: boolean = false
+  private pauseOverlay: HTMLElement | null = null
 
   private lastFrameTime: number = 0
   private obstacleTypes = ["bicycle", "student", "party_boat"]
@@ -86,6 +88,9 @@ export class Game {
     // Initialize score elements
     this.scoreElement = document.getElementById("score")
     this.finalScoreElement = document.getElementById("final-score")
+
+    // Create pause overlay element
+    this.createPauseOverlay()
 
     // Setup lights
     this.setupLights()
@@ -384,7 +389,7 @@ export class Game {
     }
 
     // Update game state
-    if (this.isRunning) {
+    if (this.isRunning && !this.isPaused) {
       // Accelerate
       this.speed = Math.min(this.maxSpeed, this.speed + this.acceleration * delta)
 
@@ -405,8 +410,10 @@ export class Game {
       this.updateBoatPosition()
     }
 
-    // Update physics world
-    this.world.step(delta)
+    // Update physics world only when not paused
+    if (!this.isPaused) {
+      this.world.step(delta)
+    }
 
     // Render scene
     this.renderer.render(this.scene, this.camera)
@@ -503,7 +510,7 @@ export class Game {
     scoreboardBody.innerHTML = ""
 
     try {
-      const scores = await ScoreboardService.getTopScores(15)
+      const scores = await ScoreboardService.getTopScores(10)
       scoreboardLoading.classList.add("hidden")
 
       if (scores.length === 0) {
@@ -513,8 +520,8 @@ export class Game {
         return
       }
 
-      // Only display up to 15 scores
-      scores.slice(0, 15).forEach((score, index) => {
+      // Only display up to 10 scores
+      scores.slice(0, 10).forEach((score, index) => {
         const row = document.createElement("tr")
         row.innerHTML = `
           <td>${index + 1}</td>
@@ -556,5 +563,49 @@ export class Game {
     // Update renderer size
     this.renderer.setSize(window.innerWidth, window.innerHeight)
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  }
+
+  public pause(): void {
+    if (this.isRunning && !this.isPaused) {
+      this.isPaused = true
+      this.pauseOverlay?.classList.remove("hidden")
+    }
+  }
+
+  public resume(): void {
+    if (this.isRunning && this.isPaused) {
+      this.isPaused = false
+      this.pauseOverlay?.classList.add("hidden")
+      this.lastFrameTime = performance.now() // Reset time to prevent large delta
+    }
+  }
+
+  private createPauseOverlay(): void {
+    // Check if pause overlay already exists
+    if (document.getElementById("pause-overlay")) {
+      this.pauseOverlay = document.getElementById("pause-overlay")
+      return
+    }
+
+    // Create pause overlay
+    this.pauseOverlay = document.createElement("div")
+    this.pauseOverlay.id = "pause-overlay"
+    this.pauseOverlay.classList.add("hidden")
+
+    // Add pause message
+    const message = document.createElement("div")
+    message.classList.add("pause-message")
+    message.innerHTML = `
+      <h2>Game Paused</h2>
+      <p>Return to this screen to continue</p>
+    `
+
+    this.pauseOverlay.appendChild(message)
+
+    // Add to UI container
+    const uiContainer = document.getElementById("ui-container")
+    if (uiContainer) {
+      uiContainer.appendChild(this.pauseOverlay)
+    }
   }
 }

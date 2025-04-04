@@ -147,3 +147,59 @@ button:hover {
     display: none;
   }
 }
+
+/* Scoreboard Styles */
+#player-name-container {
+  margin: 20px 0;
+}
+
+#player-name-input {
+  padding: 10px;
+  margin: 10px 0;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+#scoreboard-container {
+  margin-top: 20px;
+}
+
+#scoreboard-container h3 {
+  color: #4cadc9;
+  margin-bottom: 15px;
+}
+
+#scoreboard-loading {
+  color: rgba(255, 255, 255, 0.7);
+  margin: 10px 0;
+}
+
+#scoreboard {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  color: white;
+}
+
+#scoreboard th,
+#scoreboard td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#scoreboard th {
+  color: #4cadc9;
+  font-weight: bold;
+}
+
+#scoreboard tr:last-child td {
+  border-bottom: none;
+}
+
+#scoreboard tbody tr:hover {
+  background-color: rgba(76, 173, 201, 0.2);
+}

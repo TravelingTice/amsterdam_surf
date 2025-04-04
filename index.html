@@ -54,6 +54,32 @@
         <div id="game-over-screen" class="hidden">
           <h2>Game Over!</h2>
           <p>Distance: <span id="final-score">0</span>m</p>
+
+          <!-- Player name input (shown only when name not in localStorage) -->
+          <div id="player-name-container" class="hidden">
+            <p>Enter your name to save your score:</p>
+            <input type="text" id="player-name-input" maxlength="15" placeholder="Your name" />
+            <button id="save-score-button">Save Score</button>
+          </div>
+
+          <!-- Scoreboard display -->
+          <div id="scoreboard-container">
+            <h3>Top Scores</h3>
+            <div id="scoreboard-loading">Loading scores...</div>
+            <table id="scoreboard">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Name</th>
+                  <th>Score</th>
+                </tr>
+              </thead>
+              <tbody id="scoreboard-body">
+                <!-- Scores will be inserted here -->
+              </tbody>
+            </table>
+          </div>
+
           <button id="restart-button">PLAY AGAIN</button>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import "./style.css"
 import { Game } from "./game"
+import { ScoreboardService } from "./utils/scoreboard"
 
 const startGame = (game: Game) => {
   game.start()
@@ -27,6 +28,42 @@ window.addEventListener("DOMContentLoaded", () => {
   restartButton.addEventListener("click", () => {
     game.restart()
   })
+
+  // Handle player name input and score saving
+  const playerNameInput = document.getElementById("player-name-input") as HTMLInputElement
+  const saveScoreButton = document.getElementById("save-score-button") as HTMLButtonElement
+
+  if (playerNameInput && saveScoreButton) {
+    // Enter key on input
+    playerNameInput.addEventListener("keyup", async (event) => {
+      if (event.key === "Enter" && playerNameInput.value.trim()) {
+        const playerName = playerNameInput.value.trim()
+        const finalScore = parseInt(document.getElementById("final-score")?.textContent || "0")
+
+        // Save player name and score
+        ScoreboardService.savePlayerName(playerName)
+        await game.saveScore(playerName, finalScore)
+
+        // Hide input container
+        document.getElementById("player-name-container")?.classList.add("hidden")
+      }
+    })
+
+    // Save button click
+    saveScoreButton.addEventListener("click", async () => {
+      if (playerNameInput.value.trim()) {
+        const playerName = playerNameInput.value.trim()
+        const finalScore = parseInt(document.getElementById("final-score")?.textContent || "0")
+
+        // Save player name and score
+        ScoreboardService.savePlayerName(playerName)
+        await game.saveScore(playerName, finalScore)
+
+        // Hide input container
+        document.getElementById("player-name-container")?.classList.add("hidden")
+      }
+    })
+  }
 
   // Keyboard controls
   window.addEventListener("keydown", (event) => {

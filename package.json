@@ -18,6 +18,7 @@
   "license": "ISC",
   "description": "Amsterdam Canal Surfer - An endless runner game",
   "dependencies": {
+    "@supabase/supabase-js": "^2.49.4",
     "@types/three": "^0.174.0",
     "cannon-es": "^0.20.0",
     "three": "^0.174.0",

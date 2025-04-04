@@ -4,6 +4,7 @@ import { createBoat } from "./models/boat"
 import { createCanalHouses } from "./models/canalHouses"
 import { createWater } from "./models/water"
 import { createObstacle } from "./models/obstacle"
+import { ScoreboardService } from "./utils/scoreboard"
 
 // Type definitions
 interface Obstacle {
@@ -435,13 +436,7 @@ export class Game {
     this.updateBoatPosition()
   }
 
-  public restart(): void {
-    const url = new URL(window.location.href)
-    url.searchParams.set("startImmediately", "true")
-    window.location.href = url.toString()
-  }
-
-  public gameOver(): void {
+  public async gameOver(): Promise<void> {
     this.isRunning = false
     this.speed = 0
 
@@ -451,9 +446,97 @@ export class Game {
       this.finalScoreElement.textContent = `${finalScore}`
     }
 
-    // Show game over screen
+    // Check if player name exists
+    const playerName = ScoreboardService.getPlayerName()
+    const playerNameContainer = document.getElementById("player-name-container")
+
+    if (!playerName) {
+      // Show name input if no name saved
+      playerNameContainer?.classList.remove("hidden")
+    } else {
+      // Auto-save score if name exists
+      await this.saveScore(playerName, finalScore)
+    }
+
+    // Load and display scoreboard
+    await this.loadScoreboard()
+
+    // Show game over screen and hide mobile controls
     document.getElementById("game-over-screen")?.classList.remove("hidden")
     document.getElementById("mobile-controls")?.classList.add("hidden")
+  }
+
+  public restart(): void {
+    // Reset game state
+    this.score = 0
+    this.speed = 0
+    this.obstacles.forEach((obstacle) => {
+      this.scene.remove(obstacle.mesh)
+      this.world.removeBody(obstacle.body)
+    })
+    this.obstacles = []
+
+    // Hide game over screen
+    document.getElementById("game-over-screen")?.classList.add("hidden")
+
+    // Hide player name input container
+    document.getElementById("player-name-container")?.classList.add("hidden")
+
+    // Reset scoreboard loading state
+    document.getElementById("scoreboard-loading")?.classList.remove("hidden")
+
+    // Show mobile controls if on mobile
+    if (window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
+      document.getElementById("mobile-controls")?.classList.remove("hidden")
+    }
+
+    // Start the game again
+    this.start()
+  }
+
+  public async saveScore(playerName: string, score: number): Promise<void> {
+    const success = await ScoreboardService.saveScore(playerName, score)
+    if (success) {
+      await this.loadScoreboard() // Refresh scoreboard after saving
+    }
+  }
+
+  private async loadScoreboard(): Promise<void> {
+    const scoreboardBody = document.getElementById("scoreboard-body")
+    const scoreboardLoading = document.getElementById("scoreboard-loading")
+
+    if (!scoreboardBody || !scoreboardLoading) return
+
+    scoreboardLoading.classList.remove("hidden")
+    scoreboardBody.innerHTML = ""
+
+    try {
+      const scores = await ScoreboardService.getTopScores()
+      scoreboardLoading.classList.add("hidden")
+
+      if (scores.length === 0) {
+        const noScoresRow = document.createElement("tr")
+        noScoresRow.innerHTML = '<td colspan="3">No scores yet</td>'
+        scoreboardBody.appendChild(noScoresRow)
+        return
+      }
+
+      scores.forEach((score, index) => {
+        const row = document.createElement("tr")
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${score.player_name}</td>
+          <td>${score.score}m</td>
+        `
+        scoreboardBody.appendChild(row)
+      })
+    } catch (error) {
+      console.error("Error loading scoreboard:", error)
+      scoreboardLoading.classList.add("hidden")
+      const errorRow = document.createElement("tr")
+      errorRow.innerHTML = '<td colspan="3">Error loading scores</td>'
+      scoreboardBody.appendChild(errorRow)
+    }
   }
 
   public moveLeft(): void {

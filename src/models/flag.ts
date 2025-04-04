@@ -1,6 +1,6 @@
 import * as THREE from "three"
 
-export function createBoatFlag(): THREE.Group {
+export function createFlag(): THREE.Group {
   const flagGroup = new THREE.Group()
 
   // Create the black rod

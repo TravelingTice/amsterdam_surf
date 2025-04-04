@@ -1,5 +1,5 @@
 import * as THREE from "three"
-import { createBoatFlag } from "../../boatflag"
+import { createFlag } from "../../flag"
 import { createBottle } from "./bottle"
 
 export function createPartyBoat(): THREE.Group {
@@ -94,7 +94,7 @@ export function createPartyBoat(): THREE.Group {
 
   boat.add(backBarrier)
 
-  const boatFlag = createBoatFlag()
+  const boatFlag = createFlag()
   boatFlag.position.set(0, 0.45, 1.5)
   boat.add(boatFlag)
 

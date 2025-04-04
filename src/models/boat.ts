@@ -1,5 +1,5 @@
 import * as THREE from "three"
-import { createBoatFlag } from "./boatflag"
+import { createFlag } from "./flag"
 
 export function createBoat(): THREE.Group {
   const boat = new THREE.Group()
@@ -147,7 +147,7 @@ export function createBoat(): THREE.Group {
   steeringWheelGroup.rotation.x = Math.PI / 2 + Math.PI / 6 // Angled slightly
   steeringWheelGroup.position.set(0, 0.55, -0.7) // Position at front of boat
 
-  const flag = createBoatFlag()
+  const flag = createFlag()
   flag.position.set(0, 0.2, 1.6)
   flag.rotation.y = -Math.PI / 1.5 // Rotate 90 degrees so flag points backwards
   flag.rotation.x = Math.PI / 7 // Slant it down slightly (15 degrees)

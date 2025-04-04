@@ -467,31 +467,9 @@ export class Game {
   }
 
   public restart(): void {
-    // Reset game state
-    this.score = 0
-    this.speed = 0
-    this.obstacles.forEach((obstacle) => {
-      this.scene.remove(obstacle.mesh)
-      this.world.removeBody(obstacle.body)
-    })
-    this.obstacles = []
-
-    // Hide game over screen
-    document.getElementById("game-over-screen")?.classList.add("hidden")
-
-    // Hide player name input container
-    document.getElementById("player-name-container")?.classList.add("hidden")
-
-    // Reset scoreboard loading state
-    document.getElementById("scoreboard-loading")?.classList.remove("hidden")
-
-    // Show mobile controls if on mobile
-    if (window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
-      document.getElementById("mobile-controls")?.classList.remove("hidden")
-    }
-
-    // Start the game again
-    this.start()
+    const url = new URL(window.location.href)
+    url.searchParams.set("startImmediately", "true")
+    window.location.href = url.toString()
   }
 
   public async saveScore(playerName: string, score: number): Promise<void> {

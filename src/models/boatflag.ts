@@ -26,7 +26,6 @@ export function createBoatFlag(): THREE.Group {
 
   // Create the three color stripes with wave effect
   const colors = [0xae1c28, 0xffffff, 0x21468b] // Red, White, Blue
-  const stripeNames = ["Red", "White", "Blue"]
   const stripes = []
 
   // Create each colored stripe

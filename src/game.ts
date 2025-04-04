@@ -449,6 +449,7 @@ export class Game {
     // Check if player name exists
     const playerName = ScoreboardService.getPlayerName()
     const playerNameContainer = document.getElementById("player-name-container")
+    const rankMessage = document.getElementById("rank-message")
 
     if (!playerName) {
       // Show name input if no name saved
@@ -456,6 +457,13 @@ export class Game {
     } else {
       // Auto-save score if name exists
       await this.saveScore(playerName, finalScore)
+
+      // Get and display player's rank
+      const rank = await ScoreboardService.getPlayerRank(playerName, finalScore)
+      if (rank && rankMessage) {
+        rankMessage.textContent = `You finished in ${rank}${this.getOrdinalSuffix(rank)} place overall!`
+        rankMessage.classList.remove("hidden")
+      }
     }
 
     // Load and display scoreboard
@@ -464,6 +472,12 @@ export class Game {
     // Show game over screen and hide mobile controls
     document.getElementById("game-over-screen")?.classList.remove("hidden")
     document.getElementById("mobile-controls")?.classList.add("hidden")
+  }
+
+  private getOrdinalSuffix(n: number): string {
+    const s = ["th", "st", "nd", "rd"]
+    const v = n % 100
+    return s[(v - 20) % 10] || s[v] || s[0]
   }
 
   public restart(): void {

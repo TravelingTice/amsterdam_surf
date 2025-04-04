@@ -48,4 +48,24 @@ export const ScoreboardService = {
       return []
     }
   },
+
+  // Get player's rank from all scores
+  async getPlayerRank(playerName: string, playerScore: number): Promise<number | null> {
+    try {
+      const { data, error } = await supabase
+        .from("scores")
+        .select("score")
+        .order("score", { ascending: false })
+
+      if (error) throw error
+      if (!data) return null
+
+      // Find the position where this score would fit
+      const position = data.findIndex((score) => score.score <= playerScore) + 1
+      return position || data.length + 1
+    } catch (err) {
+      console.error("Error getting player rank:", err)
+      return null
+    }
+  },
 }

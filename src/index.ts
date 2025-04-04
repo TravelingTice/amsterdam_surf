@@ -59,10 +59,25 @@ window.addEventListener("DOMContentLoaded", () => {
         ScoreboardService.savePlayerName(playerName)
         await game.saveScore(playerName, finalScore)
 
+        // Get and display player's rank
+        const rank = await ScoreboardService.getPlayerRank(playerName, finalScore)
+        const rankMessage = document.getElementById("rank-message")
+        if (rank && rankMessage) {
+          rankMessage.textContent = `You finished in ${rank}${getOrdinalSuffix(rank)} place overall!`
+          rankMessage.classList.remove("hidden")
+        }
+
         // Hide input container
         document.getElementById("player-name-container")?.classList.add("hidden")
       }
     })
+  }
+
+  // Helper function for ordinal suffixes
+  const getOrdinalSuffix = (n: number): string => {
+    const s = ["th", "st", "nd", "rd"]
+    const v = n % 100
+    return s[(v - 20) % 10] || s[v] || s[0]
   }
 
   // Keyboard controls

@@ -203,3 +203,10 @@ button:hover {
 #scoreboard tbody tr:hover {
   background-color: rgba(76, 173, 201, 0.2);
 }
+
+#rank-message {
+  color: #4cadc9;
+  font-size: 16px;
+  margin: 10px 0;
+  font-style: italic;
+}

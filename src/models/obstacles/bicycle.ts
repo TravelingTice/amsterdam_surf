@@ -100,11 +100,11 @@ export function createBicycle(): THREE.Group {
   bicycle.add(handlebar)
   bicycle.add(seat)
 
-  // Half-submerged in water
-  bicycle.position.y = 0.3
-
-  // Rotate so it's visible from player's perspective
-  bicycle.rotation.y = Math.PI / 4
+  // More submerged in water and lying on its side
+  bicycle.position.y = -0.5 // Lower position in water
+  bicycle.rotation.x = Math.PI / 2.5 // Rotate to lie on its side
+  bicycle.rotation.y = Math.random() / 2 - 0.25 // Randomly rotate around Y axis between -0.5 and 0.5
+  bicycle.rotation.z = Math.random() - 0.5 // Randomly rotate around Z axis between -0.5 and 0.5
 
   return bicycle
 }

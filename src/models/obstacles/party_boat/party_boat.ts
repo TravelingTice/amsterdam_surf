@@ -1,13 +1,23 @@
 import * as THREE from "three"
 import { createBoatFlag } from "../../boatflag"
+import { createBottle } from "./bottle"
 
 export function createPartyBoat(): THREE.Group {
   const boat = new THREE.Group()
 
   // Hull
   const hullGeometry = new THREE.BoxGeometry(2, 0.2, 3)
+
+  // Randomly choose between black and two shades of brown
+  const boatColors = [
+    0x000000, // Black
+    0x8b4513, // Saddle Brown
+    0xa0522d, // Sienna Brown
+  ]
+  const selectedColor = boatColors[Math.floor(Math.random() * boatColors.length)]
+
   const hullMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffffff, // White
+    color: selectedColor,
     roughness: 0.5,
     metalness: 0.3,
   })
@@ -19,7 +29,7 @@ export function createPartyBoat(): THREE.Group {
   // Inside
   const insideGeometry = new THREE.BoxGeometry(1.8, 0.3, 2.8)
   const insideMaterial = new THREE.MeshStandardMaterial({
-    color: 0x9c9c9c, // Gray
+    color: 0xd2b48c, // Tan - light brown shade
     roughness: 0.5,
     metalness: 0.3,
   })
@@ -31,7 +41,7 @@ export function createPartyBoat(): THREE.Group {
   // Add side barrier
   const sideBarrier1Geometry = new THREE.BoxGeometry(0.2, 0.5, 3)
   const sideBarrier1Material = new THREE.MeshStandardMaterial({
-    color: 0xffffff, // White
+    color: selectedColor,
     roughness: 0.5,
     metalness: 0.3,
   })
@@ -45,7 +55,7 @@ export function createPartyBoat(): THREE.Group {
   // Add side barrier
   const sideBarrier2Geometry = new THREE.BoxGeometry(0.2, 0.5, 3)
   const sideBarrier2Material = new THREE.MeshStandardMaterial({
-    color: 0xffffff, // White
+    color: selectedColor,
     roughness: 0.5,
     metalness: 0.3,
   })
@@ -59,7 +69,7 @@ export function createPartyBoat(): THREE.Group {
   // Add front barrier
   const frontBarrierGeometry = new THREE.BoxGeometry(2, 0.5, 0.2)
   const frontBarrierMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffffff, // White
+    color: selectedColor,
     roughness: 0.5,
     metalness: 0.3,
   })
@@ -73,7 +83,7 @@ export function createPartyBoat(): THREE.Group {
   // Add back barrier
   const backBarrierGeometry = new THREE.BoxGeometry(2, 0.5, 0.2)
   const backBarrierMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffffff, // White
+    color: selectedColor,
     roughness: 0.5,
     metalness: 0.3,
   })
@@ -129,49 +139,7 @@ export function createPartyBoat(): THREE.Group {
   boat.add(inside)
 
   for (let i = 0; i < 3; i++) {
-    const bottle = new THREE.Group()
-
-    // Create the body of the bottle
-    const bottleBody = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.04, 0.04, 0.2, 16), // Bigger and more segments for smoother appearance
-      new THREE.MeshStandardMaterial({
-        color: 0x008000, // Green bottle
-        roughness: 0.2,
-        metalness: 0.8,
-        transparent: true,
-        opacity: 0.8,
-      })
-    )
-    bottleBody.position.y = 0.1 // Position the body correctly
-
-    // Create the neck of the bottle
-    const bottleNeck = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.02, 0.02, 0.1, 16), // Smaller neck
-      new THREE.MeshStandardMaterial({
-        color: 0x008000, // Green bottle
-        roughness: 0.2,
-        metalness: 0.8,
-        transparent: true,
-        opacity: 0.8,
-      })
-    )
-    bottleNeck.position.y = 0.25 // Position the neck correctly
-
-    // Create the cap of the bottle
-    const bottleCap = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.022, 0.022, 0.02, 16), // Cap slightly larger than neck
-      new THREE.MeshStandardMaterial({
-        color: 0xaaaaaa, // Gray cap
-        roughness: 0.5,
-        metalness: 0.5,
-      })
-    )
-    bottleCap.position.y = 0.35 // Position the cap correctly
-
-    // Add all parts to the bottle group
-    bottle.add(bottleBody)
-    bottle.add(bottleNeck)
-    bottle.add(bottleCap)
+    const bottle = createBottle()
 
     const x = (Math.random() - 0.5) * 1.5
     const z = (Math.random() - 0.5) * 2.5

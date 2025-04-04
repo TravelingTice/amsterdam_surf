@@ -2,7 +2,7 @@ import * as THREE from "three"
 import { createBarrel } from "./obstacles/barrel"
 import { createBicycle } from "./obstacles/bicycle"
 import { createStudent } from "./obstacles/student"
-import { createPartyBoat } from "./obstacles/party_boat"
+import { createPartyBoat } from "./obstacles/party_boat/party_boat"
 
 export function createObstacle(type: string): THREE.Group | THREE.Mesh {
   switch (type) {

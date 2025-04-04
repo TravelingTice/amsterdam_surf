@@ -51,7 +51,7 @@ export class Game {
   public isRunning: boolean = false
 
   private lastFrameTime: number = 0
-  private obstacleTypes = ["barrel", "bicycle", "student", "party_boat"]
+  private obstacleTypes = ["bicycle", "student", "party_boat"]
 
   private scoreElement: HTMLElement | null
   private finalScoreElement: HTMLElement | null

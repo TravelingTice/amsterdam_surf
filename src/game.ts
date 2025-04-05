@@ -299,14 +299,13 @@ export class Game {
         // Increased reset distance
         // Find the frontmost house on the same side
         const sameTypeHouses = house.side === "left" ? leftHouses : rightHouses
-        const frontHouse = sameTypeHouses.reduce((front, current) =>
+
+        const frontMostHouse = sameTypeHouses.reduce((front, current) =>
           current.mesh.position.z > front.mesh.position.z ? current : front
         )
 
         // Position this house further ahead for smoother transitions
-        house.mesh.position.z = frontHouse.mesh.position.z + 50
-        // Ensure houses stay on their correct side
-        house.mesh.position.x = house.side === "left" ? -8 : 8
+        house.mesh.position.z = frontMostHouse.mesh.position.z + 50
       }
     }
 

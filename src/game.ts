@@ -39,15 +39,14 @@ export class Game {
   private obstacles: Obstacle[] = []
   private score: number = 0
   private speed: number = 0
-  private maxSpeed: number = 20
-  private acceleration: number = 0.1
+  private maxSpeed: number = 30
+  private acceleration: number = 0.2
 
   private canalHouses: { mesh: THREE.Group; side: "left" | "right" }[] = []
   private water: THREE.Mesh
   private lastObstacleTime: number = 0
-  private obstacleInterval: number = 2000 // Increased from 1000 to 2000ms
+  private obstacleInterval: number = 1000
 
-  private isMoving: boolean = false
   public isRunning: boolean = false
   private isPaused: boolean = false
   private pauseOverlay: HTMLElement | null = null
@@ -181,7 +180,7 @@ export class Game {
 
     // Check if there's an obstacle too close to the spawn point
     const tooCloseObstacle = this.obstacles.some(
-      (obstacle) => obstacle.body.position.z > 70 // Reduced from 100 to ensure bigger gap
+      (obstacle) => obstacle.body.position.z > 65 // Reduced from 70 to 65 to allow closer spacing
     )
 
     if (tooCloseObstacle) {
@@ -216,7 +215,7 @@ export class Game {
     this.lastObstacleTime = now
 
     // Make obstacles spawn less frequently, with a higher minimum time
-    this.obstacleInterval = Math.max(1000, 2000 - this.score / 50)
+    this.obstacleInterval = Math.max(900, 1500 - this.score / 50) // Adjusted minimum from 1000 to 900, and max from 2000 to 1500
   }
 
   private updateObstacles(delta: number): void {
@@ -426,7 +425,7 @@ export class Game {
     if (this.isRunning) return
 
     this.isRunning = true
-    this.speed = 5
+    this.speed = 8
     this.score = 0
     this.lastObstacleTime = Date.now()
 
